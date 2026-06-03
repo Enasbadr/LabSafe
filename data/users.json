@@ -1,0 +1,26 @@
+{
+  "guest@labsafe.edu": {
+    "name": "Guest Scientific Peer",
+    "email": "guest@labsafe.edu",
+    "avatarUrl": "https://lh3.googleusercontent.com/aida-public/AB6AXuAls9rvpA_SW-RJyTOUKgXuDtBbcjXa3wS1rhWR-Ta98OurFIAK-KnBJ_HICXqyMcIjPdW3L54XKKxbuw0D-VjLOAMlZ9j9aMQNDfuqnb_PghryLAKoY9oHWCGXKfanITdF-os0y-MlEReXaf86RjsyvzOWTaqNaeXIqPsDvTkgYRh8XR1gp13tskOF_AHibg7YG_Xeg8Ri3oWfyGFC6N3BxrzS-bDBNgb3tXm6RodhdtYqIEeIAx5tDyIySeRady9Ua41xd4xZKoKs",
+    "level": 14,
+    "xp": 850,
+    "xpNextLevel": 1000,
+    "streakDays": 12,
+    "unlockedBadges": [
+      "safety-hero",
+      "quick-thinker",
+      "bio-master"
+    ],
+    "labProgress": {
+      "chemistry": 45,
+      "microbiology": 12
+    },
+    "masteryScores": {
+      "general": 100,
+      "biological": 75,
+      "chemical": 40,
+      "fire": 0
+    }
+  }
+}

@@ -1,0 +1,127 @@
+@import url('https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;600;700;800;900&family=Noto+Sans+Arabic:wght@300;400;500;600;700;800&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap');
+@import "tailwindcss";
+
+@variant dark (&:where(.dark, .dark *));
+
+:root, .light {
+  --primary: #00478d;
+  --primary-container: #005eb8;
+  --on-primary: #ffffff;
+  --on-primary-container: #c8daff;
+  
+  --secondary: #006a62;
+  --secondary-container: #79f4e5;
+  --on-secondary: #ffffff;
+  
+  --background: #f9f9ff;
+  --on-background: #151c27;
+  
+  --surface: #f9f9ff;
+  --surface-dim: #d3daea;
+  --surface-bright: #f9f9ff;
+  --surface-container-lowest: #ffffff;
+  --surface-container-low: #f0f3ff;
+  --surface-container: #e7eefe;
+  --surface-container-high: #e2e8f8;
+  --surface-container-highest: #dce2f3;
+  --on-surface: #151c27;
+  --on-surface-variant: #424752;
+  
+  --surface-base: #FFFFFF;
+  --surface-subtle: #F3F4F6;
+  
+  --status-success: #10B981;
+  --status-warning: #F59E0B;
+  --status-danger: #EF4444;
+  --outline: #727783;
+}
+
+.dark {
+  --primary: #9fc5fc;
+  --primary-container: #00366b;
+  --on-primary: #001c3d;
+  --on-primary-container: #d6e3ff;
+  
+  --secondary: #5ddacb;
+  --secondary-container: #005049;
+  --on-secondary: #00201d;
+  
+  --background: #0f131a;
+  --on-background: #ebf1ff;
+  
+  --surface: #0f131a;
+  --surface-dim: #0b0e14;
+  --surface-bright: #1c212c;
+  --surface-container-lowest: #080a0e;
+  --surface-container-low: #131720;
+  --surface-container: #1b202b;
+  --surface-container-high: #212735;
+  --surface-container-highest: #282f3f;
+  --on-surface: #ebf1ff;
+  --on-surface-variant: #c2c6d4;
+  
+  --surface-base: #131720;
+  --surface-subtle: #171d29;
+  
+  --status-success: #34d399;
+  --status-warning: #fbbf24;
+  --status-danger: #f87171;
+  --outline: #8e919a;
+}
+
+@theme {
+  --font-sans: "Hanken Grotesk", "Noto Sans Arabic", ui-sans-serif, system-ui, sans-serif;
+  --font-headline-lg: "Hanken Grotesk", "Noto Sans Arabic", sans-serif;
+  --font-display-lg: "Hanken Grotesk", "Noto Sans Arabic", sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  --color-primary: var(--primary);
+  --color-primary-container: var(--primary-container);
+  --color-on-primary: var(--on-primary);
+  --color-on-primary-container: var(--on-primary-container);
+  
+  --color-secondary: var(--secondary);
+  --color-secondary-container: var(--secondary-container);
+  --color-on-secondary: var(--on-secondary);
+  
+  --color-background: var(--background);
+  --color-on-background: var(--on-background);
+  
+  --color-surface-base: var(--surface-base);
+  --color-surface-subtle: var(--surface-subtle);
+  --color-surface-dim: var(--surface-dim);
+  --color-surface-bright: var(--surface-bright);
+  --color-surface-container-lowest: var(--surface-container-lowest);
+  --color-surface-container-low: var(--surface-container-low);
+  --color-surface-container: var(--surface-container);
+  --color-surface-container-high: var(--surface-container-high);
+  --color-surface-container-highest: var(--surface-container-highest);
+  --color-on-surface: var(--on-surface);
+  --color-on-surface-variant: var(--on-surface-variant);
+  
+  --color-status-success: var(--status-success);
+  --color-status-warning: var(--status-warning);
+  --color-status-danger: var(--status-danger);
+  --color-outline: var(--outline);
+}
+
+@layer utilities {
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fadeIn {
+    animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+}
+
+body {
+  @apply antialiased tracking-normal bg-background text-on-background transition-colors duration-300;
+}

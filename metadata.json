@@ -1,0 +1,6 @@
+{
+  "name": "LabSafe",
+  "description": "An interactive, guided laboratory safety learning platform featuring scenario simulations, micro-lessons, and certification tracking.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

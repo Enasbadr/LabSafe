@@ -1,0 +1,57 @@
+[
+  {
+    "id": "chemistry",
+    "title": "Chemistry Lab",
+    "titleAr": "مختبر الكيمياء",
+    "desc": "Chemical interaction, emergency spill containment, and fume hood air calibration protocols.",
+    "descAr": "التعامل الكيميائي المعقد، والوقاية من الانسبابات، ومعايرة كبائن سحب الغازات السامة.",
+    "progress": 33,
+    "locked": false,
+    "logoColor": "text-blue-650 bg-blue-50 dark:bg-blue-900/20",
+    "icon": "FlaskConical"
+  },
+  {
+    "id": "microbiology",
+    "title": "Microbiology Lab",
+    "titleAr": "مختبر الأحياء الدقيقة",
+    "desc": "Biosafety barrier levels (BSL-1 to 4), pressure autoclave, and aseptic validation controls.",
+    "descAr": "مستويات الأمان الحيوي الأربعة، والتعقيم البخاري الموصد بالضغط والتحقق الميكروبي.",
+    "progress": 0,
+    "locked": false,
+    "logoColor": "text-teal-600 bg-teal-50 dark:bg-teal-900/20",
+    "icon": "Microscope"
+  },
+  {
+    "id": "petroleum",
+    "title": "Oil & Petroleum",
+    "titleAr": "النفط والغاز والبترول",
+    "desc": "Flammability hazards, toxic gas exposure, and rig safety.",
+    "descAr": "مخاطر الاحتراق، والغازات السامة، وقواعد السلامة في الحقول والمنصات النفطية.",
+    "progress": 0,
+    "locked": true,
+    "logoColor": "text-slate-400 bg-slate-100 dark:bg-slate-800 dark:text-slate-500",
+    "icon": "Fuel"
+  },
+  {
+    "id": "water",
+    "title": "Water Treatment",
+    "titleAr": "معالجة وتحلية المياه",
+    "desc": "Chlorine handling, confined spaces, and sample testing protocols.",
+    "descAr": "التعامل الآمن مع بروم الكلور، العمل في الأماكن المغلقة، ومعايير أخذ العينات.",
+    "progress": 0,
+    "locked": true,
+    "logoColor": "text-slate-400 bg-slate-100 dark:bg-slate-800 dark:text-slate-500",
+    "icon": "Droplet"
+  },
+  {
+    "id": "food",
+    "title": "Food Analysis",
+    "titleAr": "فحص وتحليل الأغذية",
+    "desc": "Cross-contamination prevention, pathogen testing, and hygiene.",
+    "descAr": "طرق منع التلوث المتبادل، اختبار مسببات الأمراض، والنظافة الصحية المعتمدة.",
+    "progress": 0,
+    "locked": true,
+    "logoColor": "text-slate-400 bg-slate-100 dark:bg-slate-800 dark:text-slate-500",
+    "icon": "Utensils"
+  }
+]
