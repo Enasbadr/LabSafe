@@ -379,15 +379,15 @@ export default function LessonPPE({ isArabic, lessonId, onBack, onContinueToScen
   };
 
   const videoSegmentsAr = [
-    { title: "المقدمة واللوائح المعتمدة", time: "0:00 - 1:00", transcript: "أهلاً بك زميلي الباحث. اليوم سنستعرض البروتوكولات واللوائح المعتمدة للأمان المعملي قبل البدء بدراستنا للخطوات." },
-    { title: "التطبيق العملي وحسابات حواجز الحماية", time: "1:00 - 2:00", transcript: "الخطوة الاستراتيجية الأكثر أهمية تكمن في ضبط الضغط التفاضلي السلبي أو تحييد البقعة باستخدام المواد الصلبة الجافة المحفزة." },
-    { title: "التصرف السليم أثناء الطوارئ الكبرى", time: "2:00 - النهاية", transcript: "في حال حدوث حريق مذيبات Class B، اسحب الزجاج الزاحِف sash كليًا لأسفل لتدشين عازل انفجاري واقٍ ثم انشر ثاني أكسيد الكربون." }
+    { title: "المقدمة واللوائح المعتمدة", time: "0:00 - 0:05", transcript: "أهلاً بك زميلي الباحث. اليوم سنستعرض البروتوكولات واللوائح المعتمدة للأمان المعملي قبل البدء بدراستنا للخطوات." },
+    { title: "التطبيق العملي وحسابات حواجز الحماية", time: "0:05 - 0:10", transcript: "الخطوة الاستراتيجية الأكثر أهمية تكمن في ضبط الضغط التفاضلي السلبي أو تحييد البقعة باستخدام المواد الصلبة الجافة المحفزة." },
+    { title: "التصرف السليم أثناء الطوارئ الكبرى", time: "0:10 - النهاية", transcript: "في حال حدوث حريق مذيبات Class B، اسحب الزجاج الزاحِف sash كليًا لأسفل لتدشين عازل انفجاري واقٍ ثم انشر ثاني أكسيد الكربون." }
   ];
 
   const videoSegmentsEn = [
-    { title: "Regulatory Context & Setup Guidelines", time: "0:00 - 1:00", transcript: "Welcome to the training pipeline, researcher. Today we will explore active regulatory boundaries as certified under safety boards." },
-    { title: "Interactive Containment Calculations & PPE Checks", time: "1:00 - 2:00", transcript: "The primary technical goal is isolating spills starting precisely from the margins inward or calibrating negative atmospheric flows." },
-    { title: "Emergency Incineration Suppression SOP", time: "2:00 - End", transcript: "During an organic Class B explosion, slide the physical sash down fully as your shield prior to deploying CO2 canisters." }
+    { title: "Regulatory Context & Setup Guidelines", time: "0:00 - 0:05", transcript: "Welcome to the training pipeline, researcher. Today we will explore active regulatory boundaries as certified under safety boards." },
+    { title: "Interactive Containment Calculations & PPE Checks", time: "0:05 - 0:10", transcript: "The primary technical goal is isolating spills starting precisely from the margins inward or calibrating negative atmospheric flows." },
+    { title: "Emergency Incineration Suppression SOP", time: "0:10 - End", transcript: "During an organic Class B explosion, slide the physical sash down fully as your shield prior to deploying CO2 canisters." }
   ];
 
   const activeTranscript = isArabic 

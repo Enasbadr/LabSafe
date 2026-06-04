@@ -192,8 +192,8 @@ export const LAB_LESSONS_DATA: DetailedLesson[] = [
     title: "Chemical Hygiene & PPE Basics",
     titleAr: "أساسيات النظافة الكيميائية ومعدات الوقاية الشخصية",
     labType: "chemistry",
-    duration: "3 min",
-    durationAr: "٣ دقائق",
+    duration: "13 sec",
+    durationAr: "١٣ ثانية",
     category: "General Hygiene",
     categoryAr: "السلامة العامة",
     objectives: [
@@ -221,7 +221,7 @@ export const LAB_LESSONS_DATA: DetailedLesson[] = [
         titleAr: "معايير حماية العين البصرية",
         desc: "Impact-resistant glasses with solid side shields represent the absolute minimum. Avoid contact lenses during solvent handling as concentrated chemical vapors can absorb under the lens, accelerating corneal injury.",
         descAr: "نظارات مقاومة للصدمات مزودة بحواجز صلبة جانبية هي الحد الأدنى المفروض. تجنب العدسات اللاصقة لكونها تمتص الغازات وتضاعف تضرر القرنية.",
-        imageUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuC7Ws_vXiUBGC3A5HaY0hHRuLFISAfb2rnaYX4QxjXj3P4WGbnmJvo3tIV452A70yq7pliExxIOwz7gqGtV0dCLqMR4w8E-FC7ev9Y45tJNmoX5fktjHeYUc1Ra1jUZtmkl-HD3AcjUuzuP3OSbi4JyG9D0uWkCF_3UFUCmY5TJZAxqtWL6hLbY_Dysn4pEUfzHH86PrylqnUy7bMtDzgYZleE_ZYxw-nDQVZBNg_VoYrZXY-5BJ2rkL6Yoj6xHFXRKslblqCaXcuiG",
+        imageUrl: "/assets/imgs/chem-lesson1-Goggles.jpeg",
         iconType: "eye"
       },
       {
@@ -229,7 +229,7 @@ export const LAB_LESSONS_DATA: DetailedLesson[] = [
         titleAr: "حواجز اليد البشرية الوقائية",
         desc: "Standard thin nitrile gloves hold outstanding resistance for temporary chemical splashes. Corrosive strong acids (like concentrated HCl or nitric) require thick specialized neoprene or butyl gloves to provide standard breakthrough threshold defense.",
         descAr: "توفر قفازات النيتريل العادية حماية ممتازة للانسكابات العابرة السريعة. غير أن التعامل مع الأحماض الحارقة يتطلب حواجز نيوبرين سميكة.",
-        imageUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuDyTnzgff77nk6_6y9vQBpre9dwSKj6S9dAFMrOVvwRjXrwlzrxIwkHOwxqzUL_Hsbz_oLF__-A2zja5ONjVfxYZuq5FweufU2llhmgW45MX0uy_M_P65WUuz30jgBwZprW56zDigmOOT_bF28l4US8XPyxSS3enx7gQZktiie809RUCs_cUJnBQOSRQktlgj5B-oiAEI4AnhfRywofmqrBMp2aOuqNVUIhUXKmJjgZofOyQbqcorVLmfrSXDL4oLW-vSIFh_q54HRG",
+        imageUrl: "/assets/imgs/chem-lesson1-Black_neoprene_and_blue_nitrile.jpeg",
         iconType: "hand"
       },
       {
@@ -237,7 +237,7 @@ export const LAB_LESSONS_DATA: DetailedLesson[] = [
         titleAr: "معطف الوقاية القطني الأبيض",
         desc: "Lab coats must remain 100% heavy cotton and fully buttoned down. Synthetic polymer fibers (like polyester blends) will instantly melt during combustion, sticking to skin cells and severely escalating thermal burns.",
         descAr: "يجب اختيار معطف قطن ١٠٠٪ وإغلاق سائر الأزرار. تذوب ألياف البوليستر الاصطناعية على الفور مع النار مسببة تشوه جلدي حاد.",
-        imageUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuC_odtiS7RX6VUCwucTL2J07bHpiAi-GVTmMSafHD1f6mRaZb5OYfsMo63mcT-lcGmW9jnn6l57GZIodlhPKtFd5IDR7VxCP5FZMfmDh2X7Tr7og86HMQ4qGG5bZEp36d6BnMUQ1x1Itz-4vB2r7z8B3EQAkfX105RXRTU7DjO0jQhKq1-VcuyO0S_YuqYXw3W7l27Lac4pzkxDKKNrMdkgzkajfrfXvaQriQUWqc8jpySNof_Aun3aqJDDjanlG6zhmeAkgKwbMZIV",
+        imageUrl: "/assets/imgs/chem-lesson1-lab_coat.jpeg",
         iconType: "coat"
       }
     ]
@@ -276,7 +276,7 @@ export const LAB_LESSONS_DATA: DetailedLesson[] = [
         titleAr: "إجراءات تطويق منطقة الانسكاب",
         desc: "Immediately signal emergency alerts to other peers, isolate the physical workspace, and restrict access starting 3 meters from spill center. Proper containment kit deployment stops corrosive migration into structural surfaces.",
         descAr: "أبلغ الزملاء فوراً، وطوق المنطقة المحيطة بمسافة ٣ أمتار مربع من بؤرة الانسكاب لتقييد المرور لسلامة الأفراد.",
-        imageUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuA4CVLWOKF6byW-TjDl7KaJ1qIZ2aDkf1ziBKYmQBHA1mnik5Ep14fBNwAtbZY_iQtablsgjA42uA-Uds7CFJqHas8s3s9uPjX5juLcuTF4qPMXDkTZokx-ltcKmYsj9XUe4IpbwQTSSCVupz39TfRI45uJY_hqpIuHP7OjkGZDNJ88g6KeAUvQQVTViNcp2Df321ktVWfSEWoqBvaszQ0AzAkuYNKu1sUODIFhZZLmiPciTF5kHKQzfd9T-eIO91g5J3MsRHIFxziB",
+        imageUrl: "/assets/imgs/chem-lesson2-Chemical_liquid_spilled.jpeg",
         iconType: "shield"
       },
       {
@@ -284,7 +284,7 @@ export const LAB_LESSONS_DATA: DetailedLesson[] = [
         titleAr: "عامل التحييد بيكربونات الصوديوم",
         desc: "Dust granular Sodium Bicarbonate (NaHCO3) gently onto the spill starting from the outer margins towards the center. This pattern isolates the boundary, neutralizes pH, and controls heat release without causing splatters.",
         descAr: "انثر مسحوق بيكربونات الصوديوم تدريجياً ابتداءً من الحواف المتطرفة نحو الداخل للتحكم بالطاقة المتولدة وغاز CO₂.",
-        imageUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuDyTnzgff77nk6_6y9vQBpre9dwSKj6S9dAFMrOVvwRjXrwlzrxIwkHOwxqzUL_Hsbz_oLF__-A2zja5ONjVfxYZuq5FweufU2llhmgW45MX0uy_M_P65WUuz30jgBwZprW56zDigmOOT_bF28l4US8XPyxSS3enx7gQZktiie809RUCs_cUJnBQOSRQktlgj5B-oiAEI4AnhfRywofmqrBMp2aOuqNVUIhUXKmJjgZofOyQbqcorVLmfrSXDL4oLW-vSIFh_q54HRG",
+        imageUrl: "/assets/imgs/chem-lesson2-Sodium_bicarbonate.jpeg",
         iconType: "beaker"
       },
       {
@@ -292,7 +292,7 @@ export const LAB_LESSONS_DATA: DetailedLesson[] = [
         titleAr: "حظر الأوراق والسليلوز العضوي",
         desc: "Strong concentrated mineral acids, especially nitric acid, act as rapid oxidizing chemistry agents. Cleaning up with common wood-derived paper towels can trigger rapid exothermic reactions and immediate fire ignition.",
         descAr: "الأحماض المعدنية القوية والنيتريك خصوصاً تعمل كمؤكسدات فورية. تنظيفها بالمناديل الورقية يسبب اشتعالاً غير متوقّع للغابة الورقية.",
-        imageUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuC_odtiS7RX6VUCwucTL2J07bHpiAi-GVTmMSafHD1f6mRaZb5OYfsMo63mcT-lcGmW9jnn6l57GZIodlhPKtFd5IDR7VxCP5FZMfmDh2X7Tr7og86HMQ4qGG5bZEp36d6BnMUQ1x1Itz-4vB2r7z8B3EQAkfX105RXRTU7DjO0jQhKq1-VcuyO0S_YuqYXw3W7l27Lac4pzkxDKKNrMdkgzkajfrfXvaQriQUWqc8jpySNof_Aun3aqJDDjanlG6zhmeAkgKwbMZIV",
+        imageUrl: "/assets/imgs/chem-lesson2-Paper_towels_and_nitric_acid.jpeg",
         iconType: "warning"
       }
     ]
@@ -331,7 +331,7 @@ export const LAB_LESSONS_DATA: DetailedLesson[] = [
         titleAr: "معايرة تدفق سحب الهواء",
         desc: "Fume hood air sweeps hazardous chemical vapors outward. Always verify air velocity registers between 80 to 120 Linear Feet Per Minute (LFPM) on the monitor before beginning any work with volatile solvents.",
         descAr: "تسحب കැබينة الغاز الأبخرة بدقة. تأكد دائماً أن سرعة الهواء المسجلة تتراوح بين ٨٠ و١٢٠ قدماً في الدقيقة لثبات السحب الآمن.",
-        imageUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuC7Ws_vXiUBGC3A5HaY0hHRuLFISAfb2rnaYX4QxjXj3P4WGbnmJvo3tIV452A70yq7pliExxIOwz7gqGtV0dCLqMR4w8E-FC7ev9Y45tJNmoX5fktjHeYUc1Ra1jUZtmkl-HD3AcjUuzuP3OSbi4JyG9D0uWkCF_3UFUCmY5TJZAxqtWL6hLbY_Dysn4pEUfzHH86PrylqnUy7bMtDzgYZleE_ZYxw-nDQVZBNg_VoYrZXY-5BJ2rkL6Yoj6xHFXRKslblqCaXcuiG",
+        imageUrl: "/assets/imgs/chem-lesson3-Fume_hood_monitor_display_airflow.jpeg",
         iconType: "beaker"
       },
       {
@@ -339,7 +339,7 @@ export const LAB_LESSONS_DATA: DetailedLesson[] = [
         titleAr: "مسافة الأمان العميقة ١٥ سم",
         desc: "Always run burners, hold flasks, and conduct heating at least 6 inches deep behind the sash entry plane. Swirl gaps occurring right at the border can easily pull volatile vapors back into your local respiratory field.",
         descAr: "أجرِ سائر تجارب التسخين كحد أدنى على مسافة ١٥ سم داخل عمق الساقية لمنع الدوامات الطرفية من سحب الروائح لنطاق تنفسك الطبيعي.",
-        imageUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuDyTnzgff77nk6_6y9vQBpre9dwSKj6S9dAFMrOVvwRjXrwlzrxIwkHOwxqzUL_Hsbz_oLF__-A2zja5ONjVfxYZuq5FweufU2llhmgW45MX0uy_M_P65WUuz30jgBwZprW56zDigmOOT_bF28l4US8XPyxSS3enx7gQZktiie809RUCs_cUJnBQOSRQktlgj5B-oiAEI4AnhfRywofmqrBMp2aOuqNVUIhUXKmJjgZofOyQbqcorVLmfrSXDL4oLW-vSIFh_q54HRG",
+        imageUrl: "/assets/imgs/chem-lesson3-Hands_placing_flask_in_fume.jpeg",
         iconType: "shield"
       },
       {
@@ -347,7 +347,7 @@ export const LAB_LESSONS_DATA: DetailedLesson[] = [
         titleAr: "معايير السيطرة على اشتعال المذيبات",
         desc: "Highly volatile and organic solvents (like ethers, alcohols, acetone) catch fire rapidly next to active heat sources. Close the sash fully to isolate the emergency immediately and deploy standard Class B Carbon Dioxide suppressants.",
         descAr: "المذيبات الكيميائية تشتعل بخطورة عالية بجوار السخانات. أغلق فاصل الكابينة تماماً واستخدم مطفأة غاز ثاني أكسيد الكربون Class B.",
-        imageUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuAp3_0_yH_kktU8tZnoWkyEi01pr09c7N5W63KUPIyh9Mb5pgrfVNeeb6i_lbHNzS6XNp5PiIBInhh4bQA2F44vPPRlRBztGIWv1TsuPSbQcvsgx1_MRs9i4UdeCXvCMADck6dT0DaaxMDlkv4-Wgn-8CwJvjQ-_OUGzMKOwu6PLzOccCoIAP7GGiUFGnxEFjGNRDAoFDTsoxP0Bg7wZLhr9xxUBQPsTIl8cxhyzaSGGJWz4_Y43zlDpM0NMtrwDngrabi7ezcCPRNc",
+        imageUrl: "/assets/imgs/chem-lesson3-Glass_bottles_in_fume_hood.png",
         iconType: "flame"
       }
     ]
@@ -386,7 +386,7 @@ export const LAB_LESSONS_DATA: DetailedLesson[] = [
         titleAr: "كبائن السلامة البيولوجية بفلاتر HEPA",
         desc: "Unlike chemical fume hoods that exhaust air raw, Biosafety Cabinets (BSCs Class II) use HEPA sterilizers to filter internal recirculation downflow and exhaust. This creates complete product sterility while preserving user skin barrier parameters.",
         descAr: "تختلف الكبائن الكيميائية عن الحيوية؛ كبائن السلامة (BSC Class II) تطهر الهواء الداخل والخارج عبر فلتر HEPA لحماية الأنسجة والباحث.",
-        imageUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuC7Ws_vXiUBGC3A5HaY0hHRuLFISAfb2rnaYX4QxjXj3P4WGbnmJvo3tIV452A70yq7pliExxIOwz7gqGtV0dCLqMR4w8E-FC7ev9Y45tJNmoX5fktjHeYUc1Ra1jUZtmkl-HD3AcjUuzuP3OSbi4JyG9D0uWkCF_3UFUCmY5TJZAxqtWL6hLbY_Dysn4pEUfzHH86PrylqnUy7bMtDzgYZleE_ZYxw-nDQVZBNg_VoYrZXY-5BJ2rkL6Yoj6xHFXRKslblqCaXcuiG",
+        imageUrl: "/assets/imgs/micro-lesson1-Biosafety_cabinet.jpeg",
         iconType: "bio"
       },
       {
@@ -394,7 +394,7 @@ export const LAB_LESSONS_DATA: DetailedLesson[] = [
         titleAr: "تصنيف درجات العدوى الحيوية",
         desc: "BSL-1 handles low-risk agents (benign E. coli). BSL-2 manages moderate native pathogens (such as Salmonella or Influenza). BSL-3 covers highly lethal aerosol contagions (such as Tuberculosis, Anthrax) demanding special respirator locks.",
         descAr: "BSL-1 للعوامل البسيطة، BSL-2 للمسببات المرضية المتوسطة كالمكورات والسالمونيلا، BSL-3 لأوبئة الرئتين الفتاكة كالسل الجرثومي.",
-        imageUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuDyTnzgff77nk6_6y9vQBpre9dwSKj6S9dAFMrOVvwRjXrwlzrxIwkHOwxqzUL_Hsbz_oLF__-A2zja5ONjVfxYZuq5FweufU2llhmgW45MX0uy_M_P65WUuz30jgBwZprW56zDigmOOT_bF28l4US8XPyxSS3enx7gQZktiie809RUCs_cUJnBQOSRQktlgj5B-oiAEI4AnhfRywofmqrBMp2aOuqNVUIhUXKmJjgZofOyQbqcorVLmfrSXDL4oLW-vSIFh_q54HRG",
+        imageUrl: "/assets/imgs/micro-lesson1-Petri_dishes_with_cell_cultures.jpeg",
         iconType: "shield"
       },
       {
@@ -402,7 +402,7 @@ export const LAB_LESSONS_DATA: DetailedLesson[] = [
         titleAr: "الضغط السلبي التفاضلي للعزل",
         desc: "Advanced containment zones (BSL-3 & BSL-4) hold permanent negative indoor air pressure. This maintains a physical vacuum force where ambient outdoor air drafts strictly flow inward, ensuring zero leaks of airborne pathogens.",
         descAr: "نطاقات الاحتواء المتقدمة تستند لضغط تفاضلي سلبي مستمر؛ يسحب الهواء للداخل باستمرار ليضمن عدم هرب الميكروبات للخارج مطلقاً.",
-        imageUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuC_odtiS7RX6VUCwucTL2J07bHpiAi-GVTmMSafHD1f6mRaZb5OYfsMo63mcT-lcGmW9jnn6l57GZIodlhPKtFd5IDR7VxCP5FZMfmDh2X7Tr7og86HMQ4qGG5bZEp36d6BnMUQ1x1Itz-4vB2r7z8B3EQAkfX105RXRTU7DjO0jQhKq1-VcuyO0S_YuqYXw3W7l27Lac4pzkxDKKNrMdkgzkajfrfXvaQriQUWqc8jpySNof_Aun3aqJDDjanlG6zhmeAkgKwbMZIV",
+        imageUrl: "/assets/imgs/micro-lesson1-Sealed_entrance_door_BSL-3_zone.jpeg",
         iconType: "warning"
       }
     ]
@@ -441,7 +441,7 @@ export const LAB_LESSONS_DATA: DetailedLesson[] = [
         titleAr: "ديناميكا البخار الرطب المشبع",
         desc: "Moist heat sterilization transfers extensive heat energy way faster than dry hot ovens. When pressurized steam hits cold bacteria cells, it condenses immediately, instantly denaturing microbiological cellular proteins and destroying viral vectors.",
         descAr: "الحرارة البخارية الرطبة المضغوطة تفوق الأفران الجافة بمئات المرات في سرعة تفتت الجدران والنيوكليوتيدات للكائنات الحية الممرضة.",
-        imageUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuC_odtiS7RX6VUCwucTL2J07bHpiAi-GVTmMSafHD1f6mRaZb5OYfsMo63mcT-lcGmW9jnn6l57GZIodlhPKtFd5IDR7VxCP5FZMfmDh2X7Tr7og86HMQ4qGG5bZEp36d6BnMUQ1x1Itz-4vB2r7z8B3EQAkfX105RXRTU7DjO0jQhKq1-VcuyO0S_YuqYXw3W7l27Lac4pzkxDKKNrMdkgzkajfrfXvaQriQUWqc8jpySNof_Aun3aqJDDjanlG6zhmeAkgKwbMZIV",
+        imageUrl: "/assets/imgs/micro-lesson2-Steam_swirling_in_autoclave_chamber.jpeg",
         iconType: "temp"
       },
       {
@@ -449,7 +449,7 @@ export const LAB_LESSONS_DATA: DetailedLesson[] = [
         titleAr: "التحقق بالأبواغ الحيوية القياسية",
         desc: "Colorimetric chemical indicators (autoclave tape) only verify that the temperature changed. You must validate target sterility by placing bio-indicators containing Geobacillus stearothermophilus spores inside the chamber, then incubating to check for cell outgrowth.",
         descAr: "الأشرطة الكيميائية تقيس ملامسة الحرارة فقط، لكن التأكد المطلق للتعقيم يتطلب أبواغ بكتيرية حية واختبار تغير اللون بعد التحضين المعتمد.",
-        imageUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuC7Ws_vXiUBGC3A5HaY0hHRuLFISAfb2rnaYX4QxjXj3P4WGbnmJvo3tIV452A70yq7pliExxIOwz7gqGtV0dCLqMR4w8E-FC7ev9Y45tJNmoX5fktjHeYUc1Ra1jUZtmkl-HD3AcjUuzuP3OSbi4JyG9D0uWkCF_3UFUCmY5TJZAxqtWL6hLbY_Dysn4pEUfzHH86PrylqnUy7bMtDzgYZleE_ZYxw-nDQVZBNg_VoYrZXY-5BJ2rkL6Yoj6xHFXRKslblqCaXcuiG",
+        imageUrl: "/assets/imgs/micro-lesson2-Spore_test_vials_autoclave_valid.jpeg",
         iconType: "beaker"
       },
       {
@@ -457,7 +457,7 @@ export const LAB_LESSONS_DATA: DetailedLesson[] = [
         titleAr: "فرز النفايات الحيوية المصنفة",
         desc: "Infectious plates, bacterial swabs, and pathogen tubes must sit in red physical biohazard safety bags containing autoclave water. All waste must pass standard autoclave sterilization before departing outside clinical bounds.",
         descAr: "النفايات والمزارع والمحاليل البيولوجية توضع بأكياس الخطر الحيوي الحمراء المرطبة وتوصد بالكامل قبل خروجها الميداني.",
-        imageUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuDyTnzgff77nk6_6y9vQBpre9dwSKj6S9dAFMrOVvwRjXrwlzrxIwkHOwxqzUL_Hsbz_oLF__-A2zja5ONjVfxYZuq5FweufU2llhmgW45MX0uy_M_P65WUuz30jgBwZprW56zDigmOOT_bF28l4US8XPyxSS3enx7gQZktiie809RUCs_cUJnBQOSRQktlgj5B-oiAEI4AnhfRywofmqrBMp2aOuqNVUIhUXKmJjgZofOyQbqcorVLmfrSXDL4oLW-vSIFh_q54HRG",
+        imageUrl: "/assets/imgs/micro-lesson2-Red_biohazard_bag.jpeg",
         iconType: "warning"
       }
     ]
@@ -497,7 +497,7 @@ export const LAB_LESSONS_DATA: DetailedLesson[] = [
         titleAr: "بروتوكول عزل المواد المتعارضة",
         desc: "Never store nitric acid next to organic acids like acetic or formic acid, and keep strong oxidizers completely segregated from flammable solvents. Accidental leaks can spark rapid fires, immediate carbonization, or toxic emissions.",
         descAr: "يحظر تخزين حمض النيتريك بجوار الأحماض العضوية (كالخليك) أو بجانب المذيبات سريعة الاشتعال وعوامل الأكسدة، تجنباً لحدوث اشتعال تلقائي أو انبعاثات شديدة السمية.",
-        imageUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuC_odtiS7RX6VUCwucTL2J07bHpiAi-GVTmMSafHD1f6mRaZb5OYfsMo63mcT-lcGmW9jnn6l57GZIodlhPKtFd5IDR7VxCP5FZMfmDh2X7Tr7og86HMQ4qGG5bZEp36d6BnMUQ1x1Itz-4vB2r7z8B3EQAkfX105RXRTU7DjO0jQhKq1-VcuyO0S_YuqYXw3W7l27Lac4pzkxDKKNrMdkgzkajfrfXvaQriQUWqc8jpySNof_Aun3aqJDDjanlG6zhmeAkgKwbMZIV",
+        imageUrl: "/assets/imgs/chem-lesson4-Yellow_chemical_safety_cabinet.jpeg",
         iconType: "shield"
       },
       {
@@ -505,7 +505,7 @@ export const LAB_LESSONS_DATA: DetailedLesson[] = [
         titleAr: "مخاطر البيروكسيدات المتفجرة",
         desc: "Label organic peroxide formers with opening and expiration dates. Test solvents every 3 to 12 months for peroxide concentrations using starch-iodide strips before doing vacuum distillations or heating cycles.",
         descAr: "سجل تواريخ فتح واستخدام المواد العضوية من فئة البيروكسيدات وافحص تركيزها تراكمياً بأشرطة النشا واليود دورياً لتلافي حدوث انفجارات عنيفة عند التسخين.",
-        imageUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuDyTnzgff77nk6_6y9vQBpre9dwSKj6S9dAFMrOVvwRjXrwlzrxIwkHOwxqzUL_Hsbz_oLF__-A2zja5ONjVfxYZuq5FweufU2llhmgW45MX0uy_M_P65WUuz30jgBwZprW56zDigmOOT_bF28l4US8XPyxSS3enx7gQZktiie809RUCs_cUJnBQOSRQktlgj5B-oiAEI4AnhfRywofmqrBMp2aOuqNVUIhUXKmJjgZofOyQbqcorVLmfrSXDL4oLW-vSIFh_q54HRG",
+        imageUrl: "/assets/imgs/chem-lesson4-Chemist_testing.jpeg",
         iconType: "warning"
       }
     ]
@@ -545,7 +545,7 @@ export const LAB_LESSONS_DATA: DetailedLesson[] = [
         titleAr: "زمن تلامس المطهرات الفعال",
         desc: "Deploy fresh 10% sodium hypochlorite (bleach) or 70% isopropyl alcohol onto workspace surfaces and allow a minimum of 10 minutes wet exposure time to guarantee full denaturing of resilient viral and biological cell membrane barriers.",
         descAr: "رُش محلول الكلور المخفف ١٠٪ أو كحول الأيزوبروبيل ٧٠٪ على كافة مساحة الأسطح، واتركه رطباً لمدة ١٠ دقائق متواصلة لضمان القضاء التام على الأغشية الفيروسية والبكتيرية الدقيقة.",
-        imageUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuC7Ws_vXiUBGC3A5HaY0hHRuLFISAfb2rnaYX4QxjXj3P4WGbnmJvo3tIV452A70yq7pliExxIOwz7gqGtV0dCLqMR4w8E-FC7ev9Y45tJNmoX5fktjHeYUc1Ra1jUZtmkl-HD3AcjUuzuP3OSbi4JyG9D0uWkCF_3UFUCmY5TJZAxqtWL6hLbY_Dysn4pEUfzHH86PrylqnUy7bMtDzgYZleE_ZYxw-nDQVZBNg_VoYrZXY-5BJ2rkL6Yoj6xHFXRKslblqCaXcuiG",
+        imageUrl: "/assets/imgs/micro-lesson3-Spray_bottle_and_cloth.jpeg",
         iconType: "bio"
       },
       {
@@ -553,7 +553,7 @@ export const LAB_LESSONS_DATA: DetailedLesson[] = [
         titleAr: "ضوابط تفريغ وسلة المخلفات الحادة",
         desc: "Place medical needles, lancets, scalpels, and microscopic slides directly into yellow or red puncture-resistant sharps containers. Once the container reaches 3/4 capacity, seal it permanently and forward for clinical incineration.",
         descAr: "تخلص من كافة الحقن والمراود الزجاجية والمشارط مباشرة بوضعها في الحاويات المقاومة للثقب بلونها الأصفر أو الأحمر؛ وعند بلوغ السعة ٣/٤ يجب إقفالها نهائياً لإرسالها للحرق الطبي الآمن.",
-        imageUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuDyTnzgff77nk6_6y9vQBpre9dwSKj6S9dAFMrOVvwRjXrwlzrxIwkHOwxqzUL_Hsbz_oLF__-A2zja5ONjVfxYZuq5FweufU2llhmgW45MX0uy_M_P65WUuz30jgBwZprW56zDigmOOT_bF28l4US8XPyxSS3enx7gQZktiie809RUCs_cUJnBQOSRQktlgj5B-oiAEI4AnhfRywofmqrBMp2aOuqNVUIhUXKmJjgZofOyQbqcorVLmfrSXDL4oLW-vSIFh_q54HRG",
+        imageUrl: "/assets/imgs/micro-lesson3-Yellow_sharps_container.jpeg",
         iconType: "warning"
       }
     ]
