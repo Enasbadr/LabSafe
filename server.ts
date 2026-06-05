@@ -822,8 +822,9 @@ async function startServer() {
   });
 
   // Proxy consult chatbot "Dr. Safety" via server-side Gemini API with multi-model fallback and local safety advisory backup
+// Proxy consult chatbot "Dr. Safety" via server-side Gemini API with dynamic client key support and fallback
   app.post('/api/assistant/chat', chatLimiter, async (req, res) => {
-    const { message, history } = req.body;
+    const { message, history, apiKey } = req.body; // لقطنا الـ apiKey اللي مبعوت من الـ Modal هنا
     if (!message) {
       return res.status(400).json({ error: 'Message field is required' });
     }
@@ -838,19 +839,36 @@ async function startServer() {
     const hasArabic = /[\u0600-\u06FF]/.test(cleanInput);
 
     const systemInstruction = `You are "Dr. Safety", the expert Clinical Safety Officer advising scientific peers on the LabSafe platform (منصة لابسيف للسلامة المختبرية والطبية).
-Your expertise spans laboratory biosafety, proper Personal Protective Equipment (PPE) handling, hazardous acid spill controls, SDS evaluation, sterilisation processes, and clinical laboratory standards.
-Provide clear, structured, and friendly instructions.
-If the researcher asks in Arabic, reply in professional, helpful Arabic. If in English, reply in English.
-Structure your answers beautifully using markdown lists, bold terms, and advice bullets where helpful. Avoid talking about code files or system configs. Stick purely to realistic scientific safety procedures.`;
+    Your expertise spans laboratory biosafety, proper Personal Protective Equipment (PPE) handling, hazardous acid spill controls, SDS evaluation, sterilisation processes, and clinical laboratory standards.
+    Provide clear, structured, and friendly instructions.
+    If the researcher asks in Arabic, reply in professional, helpful Arabic. If in English, reply in English.
+    Structure your answers beautifully using markdown lists, bold terms, and advice bullets where helpful. Avoid talking about code files or system configs. Stick purely to realistic scientific safety procedures.`;
 
-    // Attempt Phase 1: Query gemini-3.5-flash
+    // تحديد المفتاح المستخدم: إما المبعوت ديناميكياً من الـ Modal أو المخزن في السيرفر
+    const activeApiKey = apiKey || process.env.GEMINI_API_KEY;
+
+    // Attempt Phase 1: Query gemini-2.5-flash (أو الموديل الافتراضي الفعال)
     try {
-      const client = getAiClient();
-      console.log("Dr. Safety: Dispatching payload to primary model gemini-3.5-flash...");
-      const response = await client.models.generateContent({
-        model: "gemini-3.5-flash",
+      if (!activeApiKey) {
+        throw new Error("No API key provided locally or globally");
+      }
+
+      // بناء العميل ديناميكياً بالمفتاح النشط لحماية الخصوصية
+      const dynamicClient = new GoogleGenAI({
+        apiKey: activeApiKey,
+        httpOptions: {
+          headers: { 'User-Agent': 'aistudio-build' }
+        }
+      });
+
+      console.log("Dr. Safety: Dispatching payload to primary model using active key...");
+      const response = await dynamicClient.models.generateContent({
+        model: "gemini-2.5-flash", // الموديل المستقر الفعال للـ SDK الجديدة
         contents: [
-          ...(history || []).slice(-10), // Limit history array slice to protect context window abuse
+          ...(history || []).slice(-10).map((msg: any) => ({
+            role: msg.role === 'model' ? 'model' : 'user',
+            parts: [{ text: msg.parts[0].text }]
+          })),
           { role: 'user', parts: [{ text: cleanInput }] }
         ],
         config: {
@@ -861,59 +879,33 @@ Structure your answers beautifully using markdown lists, bold terms, and advice 
 
       return res.json({ text: response.text });
     } catch (primaryErr: any) {
-      console.warn("Primary model 'gemini-3.5-flash' failed (possibly high demand/503). Retrying with backup 'gemini-3.1-flash-lite'...", primaryErr.message || primaryErr);
+      console.warn("Primary AI call failed, trying backup routine or serving local procedural text...", primaryErr.message || primaryErr);
       
-      // Attempt Phase 2: Fallback query to gemini-3.1-flash-lite
-      try {
-        if (!process.env.GEMINI_API_KEY) {
-          throw new Error("No API key available");
-        }
-        const client = getAiClient();
-        const responseBackup = await client.models.generateContent({
-          model: "gemini-3.1-flash-lite",
-          contents: [
-            ...(history || []).slice(-10),
-            { role: 'user', parts: [{ text: cleanInput }] }
-          ],
-          config: {
-            systemInstruction,
-            temperature: 0.7,
-          }
-        });
+      // Attempt Phase 2: High-fidelity local procedural safety advice (الـ Backup المنسق بتاعك)
+      let fallbackText = "";
 
-        console.log("Fallback succeeded using 'gemini-3.1-flash-lite'.");
-        return res.json({ text: responseBackup.text });
-      } catch (backupErr: any) {
-        console.error("Backup model 'gemini-3.1-flash-lite' also failed or API key is missing. Serving high-fidelity local procedural safety advice.", backupErr.message || backupErr);
-        
-        let fallbackText = "";
-
-        // Selection of beautiful fallback response matching the inquiry topic
-        if (hasArabic) {
-          if (queryText.includes("حمض") || queryText.includes("أحماض") || queryText.includes("هيدروكلوريك") || queryText.includes("acid")) {
-            fallbackText = `**[إرشاد طوارئ د. لابسيف (وضع الاحتياطي)]**\n\nيواجه الملقّم ضغطاً مؤقتاً، ولكن إليك البروتوكول الصحيح والآمن للتعامل مع الأحماض القوية (مثل حمض الهيدروكلوريك HCl 37%):\n\n1. **أدوات الوقاية الشخصية (PPE)**:\n   - يجب ارتداء قفازات مقاومة للمواد الكيميائية (نوصي بـ قفازين مزدوجين لتقليل النفاذية كلياً).\n   - معطف مختبر (مريلة مقاومة للأكالة) ونظارات أمان مخصصة للأحماض.\n2. **الضوابط الهندسية**:\n   - **يجب دائماً** معالجة الأحماض المركزة داخل خزانة أبخرة معملية معتمدة (Fume Hood)؛ لا تقم بفتحها أبداً على منضدة مكشوفة لضمان عزل الأبخرة الكاوية.\n3. **القاعدة الذهبية لتخفيف الأحماض**:\n   - **أضف الحمض إلى الماء دائماً** (A&W - Always Add Acid to Water) وليس العكس! للحيلولة دون تفاعل إطلاق الحرارة المفاجئ وغليان وارتداد السائل الكيميائي الحارق.`;
-          } else if (queryText.includes("بيولوجي") || queryText.includes("انسكاب") || queryText.includes("انسباك") || queryText.includes("bsl") || queryText.includes("spill")) {
-            fallbackText = `**[إرشاد طوارئ د. لابسيف (وضع الاحتياطي)]**\n\nيواجه الملقّم ضغطاً مؤقتاً، ولكن إليك بروتوكول معالجة الانسكابات البيولوجية من المستوى الثاني BSL-2:\n\n1. **الإخلاء الفوري والترسيب**:\n   - قم بتنبيه جميع الزملاء في المعمل وإخلاء المكان فوراً وإغلاق الباب.\n   - انتظر من 20 إلى 30 دقيقة لوقف سيل الهواء وللسماح للرذاذ المعلق (Aerosols) بالاستقرار والترسيب الكامل.\n2. **الاستعداد والوقاية**:\n   - قبل العودة للتطهير، ارتدِ معطفاً نظيفاً وقماش أمان متطابق وقفازات مزدوجة مع نظارات واقية متقنة الإحكام.\n3. **التطهير والتنظيف**:\n   - غطّ منطقة الانسكاب بالكامل بمناشف ورقية كافية لامتصاص المادة المسكوبة.\n   - صبّ معقم مناسب (مثل الكلور المنزلي المخفف حديثاً بنسبة 10٪) بلطف حول وفوق المناشف الماصة لتفادي إثارة رذاذ جديد.\n   - اترك المعقم للتفاعل لمدة 20 دقيقة على الأقل.\n   - ضع مخلفات التنظيف في أكياس النفايات البيولوجية (Biohazard Bags) لتعقيمها بالبخار لاحقاً (Autoclave).`;
-          } else if (queryText.includes("عين") || queryText.includes("وجه") || queryText.includes("درع") || queryText.includes("نظار") || queryText.includes("goggle") || queryText.includes("shield")) {
-            fallbackText = `**[إرشاد طوارئ د. لابسيف (وضع الاحتياطي)]**\n\nيواجه الملقّم ضغطاً مؤقتاً، ولكن إليك الفروقات المعتمدة لحماية العين والوجه في المختبر:\n\n1. **نظارات الأمان المغلقة (Safety Goggles)**:\n   - توفر إحكاماً كاملاً بنسبة 360 درجة حول العينين لمنع وصول الرذاذ المتطاير أو الأبخرة الكيميائية النافذة، وتعتبر الفرض الأساسي أثناء التجارب.\n2. **درع الوجه الكامل (Full Face Shield)**:\n   - يحمي كامل ملامح الوجه والرقبة من الأجسام المتطايرة القوية أو الانسكابات الفورية الضخمة (مثل النيتروجين المخزن أو السوائل المغلوية).\n   - **تنبيه هام**: درع الوجه لا يغني عن نظارات السلامة بأي حال، بل يجب ارتداؤهما معاً لضمان عدم تسلل السوائل من الحواف الجانبية.`;
-          } else {
-            fallbackText = `**[استشارات الدكتور لابسيف (وضع الاحتياطي للأمان)]**\n\nيواجه خادم معالجة الذكاء الاصطناعي ضغطاً عالياً مؤقتاً. لمساعدتك المباشرة ببروتوكولات الأمان المختبرية الأهم:\n\n- **أدوات الوقاية**: تأكد دائماً من ارتداء معطف المختبر الأبيض، القفازات المناسبة، والحذاء المغلق تماماً قبل الدخول.\n- **علامات الطوارئ والإنقاذ**: حدد موقع دش الطوارئ ومحطة غسيل العيون الأقرب إليك.\n- **صحيفة بيانات السلامة (SDS)**: راجع دائماً الأقسام رقم 4 للإسعاف الأولي والقسم رقم 8 لمستويات التعرض والتحكم الكيميائي.\n\n*يرجى تحديد المادة أو الحالة المختبرية بدقة لمساعدتك بالبروتوكول المقنن فور عودة الخدمة بالكامل!*`;
-          }
+      if (hasArabic) {
+        if (queryText.includes("حمض") || queryText.includes("أحماض") || queryText.includes("هيدروكلوريك") || queryText.includes("acid")) {
+          fallbackText = `**[إرشاد طوارئ د. لابسيف (وضع الاحتياطي)]**\n\nيواجه الملقّم ضغطاً مؤقتاً، ولكن إليك البروتوكول الصحيح والآمن للتعامل مع الأحماض القوية (مثل حمض الهيدروكلوريك HCl 37%):\n\n1. **أدوات الوقاية الشخصية (PPE)**:\n   - يجب ارتداء قفازات مقاومة للمواد الكيميائية (نوصي بـ قفازين مزدوجين لتقليل النفاذية كلياً).\n   - معطف مختبر (مريلة مقاومة للأكالة) ونظارات أمان مخصصة للأحماض.\n2. **الضوابط الهندسية**:\n   - **يجب دائماً** معالجة الأحماض المركزة داخل خزانة أبخرة معملية معتمدة (Fume Hood)؛ لا تقم بفتحها أبداً على منضدة مكشوفة لضمان عزل الأبخرة الكاوية.\n3. **القاعدة الذهبية لتخفيف الأحماض**:\n   - **أضف الحمض إلى الماء دائماً** (A&W - Always Add Acid to Water) وليس العكس! للحيلولة دون تفاعل إطلاق الحرارة المفاجئ وغليان وارتداد السائل الكيميائي الحارق.`;
+        } else if (queryText.includes("بيولوجي") || queryText.includes("انسكاب") || queryText.includes("انسباك") || queryText.includes("bsl") || queryText.includes("spill")) {
+          fallbackText = `**[إرشاد طوارئ د. لابسيف (وضع الاحتياطي)]**\n\nيواجه الملقّم ضغطاً مؤقتاً، ولكن إليك بروتوكول معالجة الانسكابات البيولوجية من المستوى الثاني BSL-2:\n\n1. **الإخلاء الفوري والترسيب**:\n   - قم بتنبيه جميع الزملاء في المعمل وإخلاء المكان فوراً وإغلاق الباب.\n   - انتظر من 20 إلى 30 دقيقة لوقف سيل الهواء وللسماح للرذاذ المعلق (Aerosols) بالاستقرار والترسيب الكامل.\n2. **الاستعداد والوقاية**:\n   - قبل العودة للتطهير، ارتدِ معطفاً نظيفاً وقماش أمان متطابققفازات مزدوجة مع نظارات واقية متقنة الإحكام.\n3. **التطهير والتنظيف**:\n   - غطّ منطقة الانسكاب بالكامل بمناشف ورقية كافية لامتصاص المادة المسكوبة.\n   - صبّ معقم مناسب (مثل الكلور المنزلي المخفف حديثاً بنسبة 10٪) بلطف حول وفوق المناشف الماصة لتفادي إثارة رذاذ جديد.\n   - اترك المعقم للتفاعل لمدة 20 دقيقة على الأقل.\n   - ضع مخلفات التنظيف في أكياس النفايات البيولوجية (Biohazard Bags) لتعقيمها بالبخار لاحقاً (Autoclave).`;
+        } else if (queryText.includes("عين") || queryText.includes("وجه") || queryText.includes("درع") || queryText.includes("نظار") || queryText.includes("goggle") || queryText.includes("shield")) {
+          fallbackText = `**[إرشاد طوارئ د. لابسيف (وضع الاحتياطي)]**\n\nيواجه الملقّم ضغطاً مؤقتاً، ولكن إليك الفروقات المعتمدة لحماية العين والوجه في المختبر:\n\n1. **نظارات الأمان المغلقة (Safety Goggles)**:\n   - توفر إحكاماً كاملاً بنسبة 360 درجة حول العينين لمنع وصول الرذاذ المتطاير أو الأبخرة الكيميائية النافذة، وتعتبر الفرض الأساسي أثناء التجارب.\n2. **درع الوجه الكامل (Full Face Shield)**:\n   - يحمي كامل ملامح الوجه والرقبة من الأجسام المتطايرة القوية أو الانسكابات الفورية الضخمة (مثل النيتروجين المخزن أو السوائل المغلوية).\n   - **تنبيه هام**: درع الوجه لا يغني عن نظارات السلامة بأي حال، بل يجب ارتداؤهما معاً لضمان عدم تسلل السوائل من الحواف الجانبية.`;
         } else {
-          // English Fallbacks
-          if (queryText.includes("acid") || queryText.includes("hydrochloric") || queryText.includes("hcl") || queryText.includes("chemical")) {
-            fallbackText = `**[Dr. Safety Advisory (Backup Procedural Guidelines)]**\n\nThe main AI model is currently under high demand, but here is the official safety protocol for handling strong/concentrated acids (such as 37% Hydrochloric Acid):\n\n1. **Personal Protective Equipment (PPE)**:\n   - Must wear chemical-resistant nitrile or neoprene gloves (double-gloving recommended for concentrated HCl).\n   - Standard lab coat + splash safety goggles. If handling volumes > 1 Liter, a chemical apron and face-shield are required.\n2. **Engineering Controls**:\n   - **Always** handle concentrated acids inside a certified, fully functional laboratory fume hood. Never open them on an open bench.\n3. **Safe Practices**:\n   - **ADD ACID TO WATER** (A&W - Always Remember): Never add water to concentrated acid to prevent aggressive rapid boiling and violent splashing projection.`;
-          } else if (queryText.includes("bsl") || queryText.includes("spill") || queryText.includes("bio") || queryText.includes("containment")) {
-            fallbackText = `**[Dr. Safety Advisory (Backup Procedural Guidelines)]**\n\nThe main AI model is currently under high demand, but here is the standard protocol for containment and cleanup of a Biological Safety Level 2 (BSL-2) spill:\n\n1. **Immediate Action (Evacuation & Aeration)**:\n   - Alert all lab personnel in the area, evacuate the room immediately, and close the door.\n   - Allow aerosols to settle for at least 20 to 30 minutes before re-entering.\n2. **PPE Preparation**:\n   - Don a clean lab coat, protective gloves (double glove), and protective eyewear before returning.\n3. **Decontamination Protocol**:\n   - Cover the spill area with absorbent paper towels.\n   - Pour an appropriate disinfectant (e.g., 10% freshly prepared household sodium hypochlorite/bleach) gently around and over the towels.\n   - Leave the disinfectant in contact for at least 20 minutes.\n   - Gather the soaked materials into a biohazard autoclave bag. Wipe the area with fresh disinfectant, then rinse with water.`;
-          } else if (queryText.includes("eye") || queryText.includes("goggle") || queryText.includes("shield") || queryText.includes("face")) {
-            fallbackText = `**[Dr. Safety Advisory (Backup Procedural Guidelines)]**\n\nThe main AI model is currently under high demand, but here is the difference between goggles and full face-shields:\n\n1. **Safety Goggles**:\n   - Provide 360-degree seal around the eyes to protect against direct chemical splashes, dusts, and fine aerosols.\n   - Must be worn as a baseline whenever liquid chemical reagents or biological samples are active.\n2. **Full Face Shield**:\n   - Protects the entire face (forehead, eyes, nose, cheeks, mouth, and neck) from flying particles, cryogenic liquid splashes (e.g., liquid nitrogen), or highly pressurized splashes.\n   - **Crucial Warning**: Face shields *do not* replace safety goggles; they must be worn *together with* certified safety goggles to ensure lateral eye sealing.`;
-          } else {
-            fallbackText = `**[Dr. Safety Advisor (Backup Safety Mode)]**\n\nI am currently operating in Backup Safety Mode due to heavy load on Google's model servers. To assist you immediately, here are critical general safety protocols:\n\n- **PPE Enforcement**: Never enter active workspaces without wearing closed-toe shoes, lab coats, and protective gloves.\n- **Emergency Station Awareness**: Identify the nearest eyewash station, safety shower, and fire extinguisher before commencing operations.\n- **Safety Data Sheets (SDS)**: Review sections 4 (First-Aid), 6 (Accidental Release), and 8 (Exposure Control) of the specific substance with your university officer.\n\n*What specific scenario or substance were you inquiring about? Let me know so I can highlight the right safety protocols!*`;
-          }
+          fallbackText = `**[استشارات الدكتور لابسيف (وضع الاحتياطي للأمان)]**\n\nيواجه خادم معالجة الذكاء الاصطناعي ضغطاً عالياً مؤقتاً. لمساعدتك المباشرة ببروتوكولات الأمان المختبرية الأهم:\n\n- **أدوات الوقاية**: تأكد دائماً من ارتداء معطف المختبر الأبيض، القفازات المناسبة، والحذاء المغلق تماماً قبل الدخول.\n- **علامات الطوارئ والإنقاذ**: حدد موقع دش الطوارئ ومحطة غسيل العيون الأقرب إليك.\n- **صحيفة بيانات السلامة (SDS)**: راجع دائماً الأقسام رقم 4 للإسعاف الأولي والقسم رقم 8 لمستويات التعرض والتحكم الكيميائي.\n\n*يرجى تحديد المادة أو الحالة المختبرية بدقة لمساعدتك بالبروتوكول المقنن فور عودة الخدمة بالكامل!*`;
         }
-
-        return res.json({ text: fallbackText, isFallbackBackup: true });
+      } else {
+        // English Fallbacks
+        if (queryText.includes("acid") || queryText.includes("hydrochloric") || queryText.includes("hcl") || queryText.includes("chemical")) {
+          fallbackText = `**[Dr. Safety Advisory (Backup Procedural Guidelines)]**\n\nThe main AI model is currently under high demand, but here is the official safety protocol for handling strong/concentrated acids (such as 37% Hydrochloric Acid):\n\n1. **Personal Protective Equipment (PPE)**:\n   - Must wear chemical-resistant nitrile or neoprene gloves (double-gloving recommended for concentrated HCl).\n   - Standard lab coat + splash safety goggles.\n2. **Engineering Controls**:\n   - **Always** handle concentrated acids inside a certified, fully functional laboratory fume hood.\n3. **Safe Practices**:\n   - **ADD ACID TO WATER** (A&W - Always Remember): Never add water to concentrated acid to prevent violent splashing projection.`;
+        } else if (queryText.includes("bsl") || queryText.includes("spill") || queryText.includes("bio") || queryText.includes("containment")) {
+          fallbackText = `**[Dr. Safety Advisory (Backup Procedural Guidelines)]**\n\nThe main AI model is currently under high demand, but here is the standard protocol for containment and cleanup of a Biological Safety Level 2 (BSL-2) spill:\n\n1. **Immediate Action**:\n   - Alert all lab personnel in the area, evacuate the room immediately, and close the door.\n2. **Decontamination Protocol**:\n   - Cover the spill area with absorbent paper towels.\n   - Pour 10% freshly prepared sodium hypochlorite/bleach gently over the towels and wait 20 minutes.\n   - Gather materials into a bio-hazard autoclave bag.`;
+        } else {
+          fallbackText = `**[Dr. Safety Advisor (Backup Safety Mode)]**\n\nI am currently operating in Backup Safety Mode due to heavy load on Google's model servers. To assist you immediately, here are critical general safety protocols:\n\n- **PPE Enforcement**: Never enter active workspaces without wearing closed-toe shoes, lab coats, and protective gloves.\n- **Emergency Station Awareness**: Identify the nearest eyewash station and safety shower.\n\n*What specific scenario or substance were you inquiring about? Let me know so I can highlight the right safety protocols!*`;
+        }
       }
+
+      return res.json({ text: fallbackText, isFallbackBackup: true });
     }
   });
 

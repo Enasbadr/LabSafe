@@ -5,7 +5,7 @@
 
 import { useState, useRef, useEffect, FormEvent } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Send, ShieldAlert, Sparkles, CornerDownLeft, Beaker, RotateCcw, AlertTriangle, ArrowLeft, Loader2 } from 'lucide-react';
+import { Send, ShieldAlert, Sparkles, RotateCcw, ArrowLeft, Loader2, Key, Trash2, X, HelpCircle } from 'lucide-react';
 import { AppLogo } from './AppLogo';
 
 interface ChatMessage {
@@ -28,11 +28,37 @@ export default function AssistantChat({ isArabic, userEmail, onBack }: Assistant
           ? "مرحباً بك! أنا الدكتور لابسيف (Dr. Safety)، مستشارك الطبي والبيولوجي للسلامة والوقاية المختبرية. كيف يمكنني مساعدتك في بروتوكولات الأمان اليوم؟" 
           : "Hello scientific peer! I am Dr. Safety, your dedicated laboratory safety and biosafety advisor. How can I assist you with safety protocols, PPE standards, or chemical containment today?"
       }]
+    },
+    {
+      role: 'model',
+      parts: [{
+        text: isArabic
+          ? "💡 **ملاحظة لتجربة الشات الذكي:** لحماية خصوصية البيانات، إذا كنت ترغب في طرح أسئلة مخصصة وتلقي إجابات مباشرة من الذكاء الاصطناعي، ستحتاج إلى إدخال مفتاح الـ **Gemini API Key** الخاص بك. يمكنك الضغط على زر **'ربط المفتاح'** في الأعلى أو تفعيله عند محاولة إرسال رسالة."
+          : "💡 **Notice for Live AI Chat:** To protect developer credentials, if you wish to ask custom questions and get instant AI responses, you will need to provide your own **Gemini API Key**. You can click **'Connect Key'** at the top or activate it when trying to send a message."
+      }]
     }
   ]);
   const [inputValue, setInputValue] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+
+  const [apiKey, setApiKey] = useState<string>(() => localStorage.getItem('LABSAFE_USER_API_KEY') || '');
+  const [inputApiKey, setInputApiKey] = useState<string>('');
+  const [showKeyModal, setShowKeyModal] = useState<boolean>(false);
+
+  const handleSaveKey = (e: FormEvent) => {
+    e.preventDefault();
+    if (!inputApiKey.trim()) return;
+    localStorage.setItem('LABSAFE_USER_API_KEY', inputApiKey.trim());
+    setApiKey(inputApiKey.trim());
+    setShowKeyModal(false);
+  };
+
+  const handleClearKey = () => {
+    localStorage.removeItem('LABSAFE_USER_API_KEY');
+    setApiKey('');
+    setInputApiKey('');
+  };
 
   // Auto scroll to latest advice message
   useEffect(() => {
@@ -49,8 +75,17 @@ export default function AssistantChat({ isArabic, userEmail, onBack }: Assistant
     { label: "Eye & Face Shield Specs", prompt: "When is a full face-shield required versus standard safety goggles?" }
   ];
 
-  const handleSend = async (text: string) => {
+ const handleSend = async (text: string) => {
     if (!text.trim() || isLoading) return;
+
+    // فحص: هل السؤال جاي من الأزرار الجاهزة؟
+    const isStarterPrompt = starterPrompts.some(btn => btn.prompt === text);
+
+    // لو كتابة مخصصة ومفيش مفتاح، نفتح الـ Modal ونوقف
+    if (!isStarterPrompt && !apiKey) {
+      setShowKeyModal(true);
+      return;
+    }
 
     const newMessages: ChatMessage[] = [
       ...messages,
@@ -61,37 +96,69 @@ export default function AssistantChat({ isArabic, userEmail, onBack }: Assistant
     setMessages(newMessages);
     setIsLoading(true);
 
+    // لو السؤال جاي من الأزرار الجاهزة ومفيش مفتاح، نشغل الـ Backup من السيرفر علطول
+    if (isStarterPrompt && !apiKey) {
+      try {
+        const response = await fetch('/api/assistant/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: text, history: messages })
+        });
+        const data = await response.json();
+        setMessages(prev => [...prev, { role: 'model', parts: [{ text: data.text }] }]);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setIsLoading(false);
+      }
+      return;
+    }
+
+    // الـ Live Mode: لو فيه مفتاح، يكلم جوجل مباشرة من المتصفح (Frontend)!
     try {
-      const response = await fetch('/api/assistant/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          message: text,
-          history: messages
-        })
+      // استيراد المكتبة ديناميكياً لتفادي مشاكل الشاشة البيضاء
+      const { GoogleGenAI } = await import('@google/genai');
+      
+      const ai = new GoogleGenAI({ apiKey: apiKey });
+      
+      const systemInstruction = `You are "Dr. Safety", the expert Clinical Safety Officer advising scientific peers on the LabSafe platform (منصة لابسيف للسلامة المختبرية والطبية).
+Your expertise spans laboratory biosafety, proper Personal Protective Equipment (PPE) handling, hazardous acid spill controls, SDS evaluation, sterilisation processes, and clinical laboratory standards.
+Provide clear, structured, and friendly instructions.
+If the researcher asks in Arabic, reply in professional, helpful Arabic. If in English, reply in English.
+Structure your answers beautifully using markdown lists, bold terms, and advice bullets where helpful. Avoid talking about code files or system configs. Stick purely to realistic scientific safety procedures.`;
+
+      console.log("Dr. Safety: Fetching live AI response directly from client browser...");
+      
+      const response = await ai.models.generateContent({
+        model: "gemini-2.5-flash",
+        contents: [
+          ...(messages || []).slice(-10).map(msg => ({
+            role: msg.role === 'model' ? 'model' : 'user',
+            parts: [{ text: msg.parts[0].text }]
+          })),
+          { role: 'user', parts: [{ text }] }
+        ],
+        config: {
+          systemInstruction,
+          temperature: 0.7,
+        }
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to reach Dr. Safety Advisor');
-      }
-
-      const data = await response.json();
       setMessages(prev => [
         ...prev,
-        { role: 'model', parts: [{ text: data.text }] }
+        { role: 'model', parts: [{ text: response.text || '' }] }
       ]);
-    } catch (err) {
-      console.error(err);
+
+    } catch (err: any) {
+      console.error("Live Client AI Error:", err);
       setMessages(prev => [
         ...prev,
         { 
           role: 'model', 
           parts: [{ 
             text: isArabic 
-              ? "عذراً، واجهت مشكلة في الاتصال بالملقّم الاستشاري. يُرجى التحقق من اتصالك والمحاولة لاحقاً." 
-              : "Apologies, I encountered an issue connecting to the advisory server. Please check your net connection or retry in a moment." 
+              ? "عذراً، حدث خطأ أثناء الاتصال المباشر بالذكاء الاصطناعي. يرجى التحقق من صلاحية الـ API Key الخاص بك والمحاولة مجدداً." 
+              : "Apologies, an error occurred during live AI fetch. Please verify your API Key and retry." 
           }] 
         }
       ]);
@@ -100,7 +167,7 @@ export default function AssistantChat({ isArabic, userEmail, onBack }: Assistant
     }
   };
 
-  const handleSubmit = (e: FormEvent) => {
+const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     handleSend(inputValue);
   };
@@ -111,8 +178,16 @@ export default function AssistantChat({ isArabic, userEmail, onBack }: Assistant
         role: 'model',
         parts: [{ 
           text: isArabic 
-            ? "تم إعادة تعيين جلسة الاستشارات الطبية. تفضل في طرح أي استسفار حول السلامة الكيميائية أو المعقمات." 
-            : "Advisory session restarted. Feel free to ask any query about chemical hazards, SOPs, or safety shields."
+            ? "مرحباً بك! أنا الدكتور لابسيف (Dr. Safety)، مستشارك الطبي والبيولوجي للسلامة والوقاية المختبرية. كيف يمكنني مساعدتك في بروتوكولات الأمان اليوم؟" 
+            : "Hello scientific peer! I am Dr. Safety, your dedicated laboratory safety and biosafety advisor. How can I assist you with safety protocols, PPE standards, or chemical containment today?"
+        }]
+      },
+      {
+        role: 'model',
+        parts: [{
+          text: isArabic
+            ? "💡 **ملاحظة لتجربة الشات الذكي:** لحماية خصوصية البيانات، إذا كنت ترغب في طرح أسئلة مخصصة وتلقي إجابات مباشرة من الذكاء الاصطناعي، ستحتاج إلى إدخال مفتاح الـ **Gemini API Key** الخاص بك. يمكنك الضغط على زر **'ربط المفتاح'** في الأعلى أو تفعيله عند محاولة إرسال رسالة."
+            : "💡 **Notice for Live AI Chat:** To protect developer credentials, if you wish to ask custom questions and get instant AI responses, you will need to provide your own **Gemini API Key**. You can click **'Connect Key'** at the top or activate it when trying to send a message."
         }]
       }
     ]);
@@ -186,7 +261,7 @@ export default function AssistantChat({ isArabic, userEmail, onBack }: Assistant
             }
             if (trimmed.startsWith('##')) {
               return (
-                <span key={lineIdx} className="block font-bold text-sm sm:text-[14px] text-[#00478d] dark:text-blue-350 mt-5 mb-2.5 border-b border-slate-100 dark:border-slate-800 pb-1 pb-1">
+                <span key={lineIdx} className="block font-bold text-sm sm:text-[14px] text-[#00478d] dark:text-blue-350 mt-5 mb-2.5 border-b border-slate-100 dark:border-slate-800 pb-1">
                   {parseBold(trimmed.replace(/^##\s*/, ''))}
                 </span>
               );
@@ -204,7 +279,7 @@ export default function AssistantChat({ isArabic, userEmail, onBack }: Assistant
   };
 
   return (
-    <div id="advisor-chat-viewport" className="flex flex-col h-[calc(100vh-140px)] md:h-[calc(100vh-112px)] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm overflow-hidden animate-fadeIn">
+    <div id="advisor-chat-viewport" className="flex flex-col h-[calc(100vh-140px)] md:h-[calc(100vh-112px)] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm overflow-hidden animate-fadeIn relative">
       
       {/* Top Advisor Header Panel */}
       <div className="px-5 py-4 bg-gradient-to-r from-teal-600 to-[#00478d] text-white flex items-center justify-between shadow-md">
@@ -230,14 +305,36 @@ export default function AssistantChat({ isArabic, userEmail, onBack }: Assistant
           </div>
         </div>
 
-        <button
-          onClick={handleClear}
-          className="flex items-center gap-1 text-xs text-white/80 hover:text-white px-2.5 py-1.5 bg-white/10 rounded-lg transition-colors cursor-pointer border border-white/10"
-          title="Reset conversation"
-        >
-          <RotateCcw className="w-3.5 h-3.5" />
-          <span className="hidden sm:inline">{isArabic ? "البدء مجدداً" : "Reset"}</span>
-        </button>
+        <div className="flex items-center gap-2">
+          {apiKey ? (
+            <button
+              onClick={handleClearKey}
+              className="flex items-center gap-1 text-xs text-red-200 hover:text-red-100 px-2.5 py-1.5 bg-red-950/20 hover:bg-red-900/30 rounded-lg transition-colors cursor-pointer border border-red-900/30"
+              title={isArabic ? "حذف مفتاح الـ API" : "Delete saved API Key"}
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">{isArabic ? "حذف المفتاح" : "Clear Key"}</span>
+            </button>
+          ) : (
+            <button
+              onClick={() => setShowKeyModal(true)}
+              className="flex items-center gap-1 text-xs text-teal-200 hover:text-teal-100 px-2.5 py-1.5 bg-teal-950/20 hover:bg-teal-900/30 rounded-lg transition-colors cursor-pointer border border-teal-900/30"
+              title={isArabic ? "إدخال مفتاح الـ API" : "Enter API Key"}
+            >
+              <Key className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">{isArabic ? "ربط المفتاح" : "Connect Key"}</span>
+            </button>
+          )}
+
+          <button
+            onClick={handleClear}
+            className="flex items-center gap-1 text-xs text-white/80 hover:text-white px-2.5 py-1.5 bg-white/10 rounded-lg transition-colors cursor-pointer border border-white/10"
+            title="Reset conversation"
+          >
+            <RotateCcw className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">{isArabic ? "البدء مجدداً" : "Reset"}</span>
+          </button>
+        </div>
       </div>
 
       {/* Main Messages & Advisory Feed */}
@@ -270,23 +367,19 @@ export default function AssistantChat({ isArabic, userEmail, onBack }: Assistant
               >
                 <div className={`flex items-start gap-2.5 max-w-[85%] ${isModel ? 'flex-row' : 'flex-row-reverse'}`}>
                   
-                  {/* Persona Icon or Avatar Indicator */}
                   <div className={`h-8 w-8 rounded-full flex items-center justify-center shrink-0 text-white font-bold select-none text-xs border ${
-                    isModel 
-                      ? 'bg-teal-600 border-teal-500' 
-                      : 'bg-[#00478d] border-blue-400'
+                    isModel ? 'bg-teal-600 border-teal-500' : 'bg-[#00478d] border-blue-400'
                   }`}>
                     {isModel ? "Dr" : "U"}
                   </div>
 
-                  {/* Speech Bubble Card */}
                   <div className={`p-4 rounded-2xl shadow-sm border text-xs leading-relaxed ${
                     isModel 
                       ? 'bg-white text-slate-800 dark:bg-slate-800 dark:text-slate-100 border-slate-200 dark:border-slate-700 rounded-tl-none' 
                       : 'bg-[#00478d] text-white border-blue-900 rounded-tr-none font-medium'
                   }`}>
                     <div className="leading-relaxed font-sans prose prose-sm dark:prose-invert">
-                      {isModel ? formatMarkdown(msg.parts[0].text) : <div className="text-xs sm:text-[13px]">{msg.parts[0].text}</div>}
+                      {formatMarkdown(msg.parts[0].text)}
                     </div>
                   </div>
 
@@ -298,11 +391,7 @@ export default function AssistantChat({ isArabic, userEmail, onBack }: Assistant
 
         {/* Loading Bubble */}
         {isLoading && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex justify-start w-full"
-          >
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex justify-start w-full">
             <div className="flex items-start gap-2.5">
               <div className="h-8 w-8 rounded-full bg-teal-600 flex items-center justify-center shrink-0 border border-teal-500">
                 <Loader2 className="w-4 h-4 text-white animate-spin" />
@@ -347,11 +436,80 @@ export default function AssistantChat({ isArabic, userEmail, onBack }: Assistant
         <button
           type="submit"
           disabled={!inputValue.trim() || isLoading}
-          className="h-10 w-10 shrink-0 bg-[#00478d] hover:bg-[#005db6] disabled:bg-slate-200 disabled:dark:bg-slate-800 dark:bg-teal-600 dark:hover:bg-teal-500 rounded-xl flex items-center justify-center text-white transition-all shadow-sm cursor-pointer disabled:cursor-not-allowed disabled:transform-none"
+          className="h-10 w-10 shrink-0 bg-[#00478d] hover:bg-[#005db6] disabled:bg-slate-200 disabled:dark:bg-slate-800 dark:bg-teal-600 dark:hover:bg-teal-500 rounded-xl flex items-center justify-center text-white transition-all shadow-sm cursor-pointer disabled:transform-none"
         >
           <Send className="w-4 h-4" />
         </button>
       </form>
+
+      {/* 🌟 نافذة طلب المفتاح المنبثقة والذكية بالكامل (Modal Overlay) 🌟 */}
+      {showKeyModal && (
+        <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center p-5 animate-fadeIn">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 w-full max-w-md rounded-2xl p-6 shadow-xl relative text-center">
+            
+            {/* زر الإلغاء (X) */}
+            <button 
+              type="button"
+              onClick={() => setShowKeyModal(false)} 
+              className="absolute top-4 right-4 p-1 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer transition-colors"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            <div className="w-12 h-12 rounded-2xl bg-teal-50 dark:bg-teal-950/40 border border-teal-200 dark:border-teal-800 flex items-center justify-center text-teal-600 dark:text-teal-400 mx-auto mb-4 shadow-sm">
+              <Key className="w-5 h-5" />
+            </div>
+
+            <h3 className="text-sm font-bold text-slate-800 dark:text-slate-100 mb-2">
+              {isArabic ? "تفعيل المستشار الذكي (Gemini AI)" : "Activate Dr. Safety Advisor"}
+            </h3>
+            
+            <p className="text-xs text-slate-500 dark:text-slate-400 mb-4 leading-relaxed px-2">
+              {isArabic 
+                ? "لحماية أمن معلومات المطور، يرجى تفعيل المساعد الذكي بمفتاح الـ API الخاص بك. يتم حفظه بأمان في متصفحك فقط."
+                : "To ensure cyber safety, please activate the chat assistant using your own API Key. It is stored securely only in your browser."}
+            </p>
+
+            {/* رابط إرشادات الحصول على المفتاح */}
+            <a 
+              href="https://aistudio.google.com/" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="inline-flex items-center gap-1 text-[11px] font-semibold text-teal-600 dark:text-teal-400 hover:underline mb-5 bg-teal-50/50 dark:bg-teal-950/20 px-3 py-1.5 rounded-lg border border-teal-100 dark:border-teal-900/40"
+            >
+              <HelpCircle className="w-3.5 h-3.5" />
+              <span>{isArabic ? "كيف أحصل على مفتاح مجاني؟ (إرشادات)" : "How to get a free API key? (Guide)"}</span>
+            </a>
+
+            <form onSubmit={handleSaveKey} className="w-full flex flex-col gap-2.5">
+              <input
+                type="password"
+                value={inputApiKey}
+                onChange={(e) => setInputApiKey(e.target.value)}
+                placeholder={isArabic ? "أدخل مفتاح الـ API هنا (AIza...)" : "Enter your API Key (AIza...)"}
+                className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-xs focus:outline-none focus:border-teal-500 text-slate-800 dark:text-slate-100 shadow-sm"
+              />
+              <div className="flex gap-2 w-full mt-1.5">
+                <button 
+                  type="button" 
+                  onClick={() => setShowKeyModal(false)} 
+                  className="flex-1 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer"
+                >
+                  {isArabic ? "إلغاء وتصفح الشات" : "Cancel & Browse"}
+                </button>
+                <button 
+                  type="submit" 
+                  disabled={!inputApiKey.trim()} 
+                  className="flex-1 bg-teal-600 hover:bg-teal-500 disabled:bg-slate-200 disabled:dark:bg-slate-800 text-white py-2 rounded-xl text-xs font-bold transition-colors disabled:cursor-not-allowed shadow-sm"
+                >
+                  {isArabic ? "تفعيل الحفظ" : "Activate & Save"}
+                </button>
+              </div>
+            </form>
+
+          </div>
+        </div>
+      )}
 
     </div>
   );
