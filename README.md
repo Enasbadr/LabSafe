@@ -7,6 +7,7 @@
 ## ✨ Features
 * **Interactive Lecture Segments:** Micro-learning safety video modules with synced timelines.
 * **Smart Assistant:** Powered by Gemini AI to answer chemical hygiene and lab safety queries on the spot.
+* **User-Powered Privacy:** Features a secure Client-Side API activation mode to protect credentials and store keys safely within the browser.
 * **Scenario Quizzes:** Test users' decision-making during simulated laboratory emergencies.
 * **Admin Dashboard:** A built-in Content Management System (CMS) for professors and admins to manage lessons, PPE standards, and nutrition/chemical references seamlessly.
 
@@ -16,7 +17,7 @@
 * **Frontend:** React, Vite, TypeScript, Tailwind CSS.
 * **Backend:** Node.js, Express.
 * **Database:** Local JSON Data Management.
-* **AI Integration:** Gemini AI API.
+* **AI Integration:** Google Generative AI SDK (Gemini AI API).
 
 ---
 
@@ -29,12 +30,11 @@ Follow these steps to get everything running on your local machine:
 1. **Install dependencies:**
    npm install
 
-2. **Configure Environment Variables:**
-   Create a .env file in the root directory and add your Gemini API Key:
-   VITE_GEMINI_API_KEY=your_api_key_here
-
-3. **Run the application:**
+2. **Run the development server:**
    npm run dev
+
+3. **Activate AI Smart Assistant:**
+   When navigating to the Smart Assistant view, click on the **'Connect Key'** button at the top header or try to send a message. Enter your personal Gemini API Key (fetched for free from Google AI Studio). The key is stored securely inside your local browser's storage and never exposed.
 
 ---
 
@@ -48,4 +48,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 * LinkedIn: [\[My LinkedIn Profile Link\]](https://www.linkedin.com/in/enas-badr-khalifa/)
 * Behance: [\[My Behance Link\]](https://www.behance.net/enas_b )
 
----
+
